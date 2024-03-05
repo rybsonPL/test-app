@@ -15,8 +15,8 @@ steps:
     versionSpec: '18.13'
   displayName: 'Install Node.js'
 
-- script: |
+- script: 
     npm install -g @angular/cli
     npm install
-    ng build --prod
+    npm run build:prod
   displayName: 'npm install and build'
