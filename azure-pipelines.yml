@@ -1,27 +1,58 @@
-# Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "18.13"
+    displayName: "Install Node.js"
+
+  - script: |
+      npm install -g @angular/cli
+      npm install
+      ng build --configuration production
+    displayName: "npm install and build"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "dist"
+      ArtifactName: "drop"
+      publishLocation: "Container"
 
 trigger:
-- master
+  - master
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18.13'
-  displayName: 'Install Node.js'
+stages:
+  - stage: Installation
+    displayName: "Install Node.js and dependencies"
+    jobs:
+      - job: InstallNodeAndDependencies
+        displayName: "Install Node.js and dependencies"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "20.9.0"
+            displayName: "Install Node.js"
 
-- script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --configuration production
-  displayName: 'npm install and build'
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'dist'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+          - script: |
+              npm install -g @angular/cli
+              npm install
+            displayName: "Install npm packages"
+
+  - stage: Build
+    displayName: "Build"
+    jobs:
+      - job: BuildAngularApp
+        displayName: "Build Angular application"
+        dependsOn: InstallNodeAndDependencies
+        steps:
+          - script: |
+              npm run build:prod
+            displayName: "Build Angular application"
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "dist"
+              ArtifactName: "drop"
+              publishLocation: "Container"
+              displaiyName: "Publish Artifact"
