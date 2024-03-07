@@ -1,21 +1,3 @@
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "18.13"
-    displayName: "Install Node.js"
-
-  - script: |
-      npm install -g @angular/cli
-      npm install
-      ng build --configuration production
-    displayName: "npm install and build"
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: "dist"
-      ArtifactName: "drop"
-      publishLocation: "Container"
-
 trigger:
   - master
 
@@ -23,11 +5,11 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  - stage: Installation
-    displayName: "Install Node.js and dependencies"
+  - stage: Build
+    displayName: "Build and Deploy"
     jobs:
-      - job: InstallNodeAndDependencies
-        displayName: "Install Node.js and dependencies"
+      - job: BuildAndDeploy
+        displayName: "Build and Deploy"
         steps:
           - task: NodeTool@0
             inputs:
@@ -39,20 +21,13 @@ stages:
               npm install
             displayName: "Install npm packages"
 
-  - stage: Build
-    displayName: "Build"
-    jobs:
-      - job: BuildAngularApp
-        displayName: "Build Angular application"
-        dependsOn: InstallNodeAndDependencies
-        steps:
           - script: |
               npm run build:prod
-            displayName: "Build Angular application"
+            displayName: "Build application"
 
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: "dist"
               ArtifactName: "drop"
               publishLocation: "Container"
-              displaiyName: "Publish Artifact"
+            displayName: "Publish Artifact"
