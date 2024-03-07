@@ -5,11 +5,11 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  - stage: Installation
-    displayName: "Install Node.js and dependencies"
+  - stage: Build
+    displayName: "Build and Deploy"
     jobs:
-      - job: InstallNodeAndDependencies
-        displayName: "Install Node.js and dependencies"
+      - job: BuildAndDeploy
+        displayName: "Build and Deploy Angular application"
         steps:
           - task: NodeTool@0
             inputs:
@@ -21,12 +21,6 @@ stages:
               npm install
             displayName: "Install npm packages"
 
-  - stage: Build
-    displayName: "Build"
-    jobs:
-      - job: BuildAngularApp
-        displayName: "Build Angular application"
-        steps:
           - script: |
               npm run build:prod
             displayName: "Build Angular application"
@@ -37,9 +31,3 @@ stages:
               ArtifactName: "drop"
               publishLocation: "Container"
             displayName: "Publish Artifact"
-
-      - job: StandaloneJob
-        displayName: "Standalone Job"
-        steps:
-          - script: echo "This is a standalone job"
-            displayName: "Standalone Job Step"
