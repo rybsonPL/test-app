@@ -9,7 +9,7 @@ stages:
     displayName: "Build and Deploy"
     jobs:
       - job: BuildAndDeploy
-        displayName: "Build and Deploy Angular application"
+        displayName: "Build and Deploy"
         steps:
           - task: NodeTool@0
             inputs:
@@ -23,7 +23,7 @@ stages:
 
           - script: |
               npm run build:prod
-            displayName: "Build Angular application"
+            displayName: "Build application"
 
           - task: PublishBuildArtifacts@1
             inputs:

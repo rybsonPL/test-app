@@ -9,5 +9,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'Hackaton 2024';
+  title = 'Hackaton 2024, v2';
 }
